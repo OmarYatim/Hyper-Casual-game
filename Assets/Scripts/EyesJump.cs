@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class EyesJump : MonoBehaviour
 {
+    [SerializeField] GameObject LoseText;
+    [SerializeField] GameObject WinText;
+    [SerializeField] GameObject HitText;
+    [SerializeField] GameObject ReplayButton;
+
     [SerializeField] Transform JumpPosition;
     [SerializeField] float DistanceBetweenBlocks;
     [SerializeField] float MaxTime = 3f;
@@ -29,23 +34,44 @@ public class EyesJump : MonoBehaviour
         }
     }
 
-
+    int i = 0;
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.CompareTag("FallBlock"))
         {
             CanJump = true;
-            //LeftEye.RotationAxe = LeftEye.transform.right;
             LeftEye.RotateDirection = collision.gameObject.GetComponent<BlockData>().LeftRotationDirection;
-            //RightEye.RotationAxe = RightEye.transform.right;
             RightEye.RotateDirection = collision.gameObject.GetComponent<BlockData>().RightRotationDirection;
-            CheckRotation(collision.gameObject);
+            i++;
+            LeftEye.RotationSpeed += 10;
+            RightEye.RotationSpeed += 10;
             collision.gameObject.GetComponent<BlockFall>().WaitForFall = MaxTime;
             if(MaxTime > 0.5f) MaxTime -= 0.2f;
-            //collision.gameObject.GetComponent<BlockFall>().DominoFall();
+            collision.gameObject.GetComponent<BlockFall>().DominoFall();
             Vector3 NewJumpPos = collision.gameObject.GetComponent<BlockData>().JumpPosition.position;
             ChangeJumpPosition(NewJumpPos);
             transform.SetParent(collision.gameObject.transform);
+        }
+        if(collision.gameObject.CompareTag("Respawn"))
+        {
+            LoseText.SetActive(true);
+            ReplayButton.SetActive(true);
+            Time.timeScale = 0;
+        }
+        if (collision.gameObject.CompareTag("Final Block"))
+        {
+            WinText.SetActive(true);
+            ReplayButton.SetActive(true);
+            Time.timeScale = 0;
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (i == 1)
+        {
+            CheckRotation(collision.gameObject);
+            i++;
         }
     }
 
@@ -54,8 +80,15 @@ public class EyesJump : MonoBehaviour
         if (Block.layer != 8)
         {
             if (LeftEye.CheckLook() && RightEye.CheckLook())
-                Debug.Log("YOu Won");
-            else Debug.Log("You Lose");
+            {
+                HitText.SetActive(true);
+            }
+            else
+            {
+                LoseText.SetActive(true);
+                ReplayButton.SetActive(true);
+                Time.timeScale = 0;
+            }
         }
         else
         {
@@ -74,5 +107,6 @@ public class EyesJump : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         CanJump = false;
+        i = 0;
     }
 }

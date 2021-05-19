@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EyeRotation : MonoBehaviour
 {
-    [SerializeField] float RotationSpeed = 20;
+    public float RotationSpeed = 80;
 
-    [HideInInspector] public Vector3 RotationAxe;
+    Vector3 RotationAxe;
     [HideInInspector] public bool CanRotate = false;
     [HideInInspector] public Transform RotateDirection;
     bool isCorrect = false;
@@ -22,9 +22,6 @@ public class EyeRotation : MonoBehaviour
     {
         if (CanRotate)
             Rotate();
-        //transform.Rotate(RotationAxe * 50 * Time.deltaTime);
-        Debug.DrawRay(transform.position, transform.right, Color.green, Mathf.Infinity);
-
     }
 
     void Rotate()
@@ -34,7 +31,7 @@ public class EyeRotation : MonoBehaviour
         float angle = 0;
         Vector3 axis = Vector3.zero;
         lookRotation.ToAngleAxis(out angle, out axis);
-        transform.Rotate(axis);
+        transform.Rotate(axis * RotationSpeed * Time.deltaTime);
     }
 
     public bool CheckLook()
@@ -47,7 +44,6 @@ public class EyeRotation : MonoBehaviour
         {
             if (hit.transform.CompareTag("LookDirection"))
             {
-                Debug.Log("3asba",gameObject);
                 isCorrect = true;
                 CanRotate = true;
             }

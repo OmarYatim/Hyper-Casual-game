@@ -22,7 +22,6 @@ public class TextAnimation : MonoBehaviour
     {
         alpha -= speed * Time.deltaTime;
         text.color = new Color(1, 1, 1, alpha);
-        Debug.Log(text.color.a);
         if (text.color.a <= 0)
             gameObject.SetActive(false);
     }
