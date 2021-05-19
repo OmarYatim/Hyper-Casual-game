@@ -7,7 +7,6 @@ public class EyeController : MonoBehaviour
     [SerializeField] GameObject HitText;
     [SerializeField] GameObject WinText;
     [SerializeField] GameObject LoseText;
-    [SerializeField] Transform JumpPosition;
     [SerializeField] Transform LeftEye;
     [SerializeField] Transform RightEye;
     [SerializeField] float FallTime = 1.5F;
@@ -16,9 +15,6 @@ public class EyeController : MonoBehaviour
 
     Vector3 RotationAxe; 
 
-    private void Start()
-    {
-    }
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Respawn"))
@@ -35,13 +31,10 @@ public class EyeController : MonoBehaviour
             Time.timeScale = 0;
             return;
         }
-        other.enabled = true;
-        transform.parent.GetComponent<EyesJump>().Cube = other;
-        transform.parent.SetParent(other.transform);
-        if(other.GetComponent<BlockData>().LookDirection != null)
+        /*if(other.GetComponent<BlockData>().LookDirection != null)
         {
-            Vector3 LookPos = other.GetComponent<BlockData>().LookDirection.position;
-            float dot = Vector3.Angle(LeftEye.transform.right, (LookPos - LeftEye.transform.position).normalized);
+            //Vector3 LookPos = other.GetComponent<BlockData>().LookDirection.position;
+            //float dot = Vector3.Angle(LeftEye.transform.right, (LookPos - LeftEye.transform.position).normalized);
             if (dot < 50)
             {
                 HitText.SetActive(true);
@@ -54,17 +47,16 @@ public class EyeController : MonoBehaviour
                 Time.timeScale = 0;
             }
 
-        }
-        JumpPosition.position = transform.parent.position;
-        RotationAxe = other.GetComponent<BlockData>().RotationAxe;
+        }*/
+        //RotationAxe = other.GetComponent<BlockData>().RotationAxe;
         LeftEye.rotation = Quaternion.identity;
         RightEye.rotation = Quaternion.identity;
         InvokeRepeating("Rotation", 1, 0.0001f);
         InvokeRepeating("Rotation",Mathf.Infinity,0.01f);
         EyeSpeed += 10;
-        other.GetComponent<BlockFall>().FallWaitTime = FallTime;
+        //other.GetComponent<BlockFall>().FallWaitTime = FallTime;
         FallTime -= 0.2f;
-        other.GetComponent<BlockFall>().DominoFall();
+        //other.GetComponent<BlockFall>().DominoFall();
     }
     void Rotation()
     {

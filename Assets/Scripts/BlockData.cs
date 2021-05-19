@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BlockData : MonoBehaviour
 {
-    public Transform LookDirection;
-    public Vector3 RotationAxe;
+    public Transform JumpPosition;
+    //public Transform LookDirection;
+    public Transform LeftRotationDirection;
+    public Transform RightRotationDirection;
 }
