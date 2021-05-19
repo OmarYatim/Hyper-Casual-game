@@ -21,6 +21,7 @@ public class EyesJump : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         //rb.sleepThreshold = 0.0f;
+        Screen.SetResolution(1080, 1920,true); //Force aspect ratio to 9:16
     }
     private void Update()
     {
@@ -28,6 +29,8 @@ public class EyesJump : MonoBehaviour
         {
             transform.SetParent(null);
             GetComponent<ParabolaController>().FollowParabola();
+            // Stop eyes from rotating when jumping
+            rb.constraints = RigidbodyConstraints.FreezeRotationZ & RigidbodyConstraints.FreezeRotationY & RigidbodyConstraints.FreezeRotationX; 
             LeftEye.CanRotate = false;
             RightEye.CanRotate = false;
             //transform.GetChild(0).GetComponent<EyeController>().StopRotating();
@@ -40,6 +43,7 @@ public class EyesJump : MonoBehaviour
         if(collision.gameObject.CompareTag("FallBlock"))
         {
             CanJump = true;
+            rb.constraints = RigidbodyConstraints.None; 
             LeftEye.RotateDirection = collision.gameObject.GetComponent<BlockData>().LeftRotationDirection;
             RightEye.RotateDirection = collision.gameObject.GetComponent<BlockData>().RightRotationDirection;
             i++;
@@ -60,9 +64,7 @@ public class EyesJump : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Final Block"))
         {
-            WinText.SetActive(true);
-            ReplayButton.SetActive(true);
-            Time.timeScale = 0;
+            CheckRotation(collision.gameObject);
         }
     }
 
@@ -77,10 +79,18 @@ public class EyesJump : MonoBehaviour
 
     void CheckRotation(GameObject Block)
     {
+
         if (Block.layer != 8)
         {
             if (LeftEye.CheckLook() && RightEye.CheckLook())
             {
+                if(Block.CompareTag("Final Block"))
+                {
+                    WinText.SetActive(true);
+                    ReplayButton.SetActive(true);
+                    Time.timeScale = 0;
+                    return;
+                }
                 HitText.SetActive(true);
             }
             else
